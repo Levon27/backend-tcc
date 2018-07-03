@@ -7,7 +7,7 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 $app = new \Slim\App;
-
+session_start();
 $app->map(['GET','POST'],'/hello/{name}', function (Request $request, Response $response, array $args) {
 	$nome = $args['name'];
 	
@@ -15,17 +15,43 @@ $app->map(['GET','POST'],'/hello/{name}', function (Request $request, Response $
 });
 
 $app->map(['GET'],'/dados/{id}/{corrente}/{tensao}/{potencia}', function (Request $request, Response $response, array $args) {
+	
+	if(!isset($_SESSION)) { 
+		session_start();
+		$_SESSION['req1'] = FALSE;
+		$_SESSION['req2'] = FALSE;
+		$_SESSION['req3'] = FALSE;
+	} 
+	
 	require_once("db.php");
+	
+	$req = array();
 	
 	$id = $request->getAttribute('id');
 	$c = $request->getAttribute('corrente');
 	$v = $request->getAttribute('tensao');
 	$p = $request->getAttribute('potencia');
 	
-	echo "id: $id, corrente: $c, tensão: $v, potência: $p";
+	echo "id: $id, corrente: $c, tensão: $v, potência: $p \n";
 	
-	$query = $pdo->prepare('INSERT INTO teste_sustek VALUES (?,?,?,?)');
-	$query->execute([$id,$c,$v,$p]);
+	array_push($req,$id,$c,$v,$p);
+	
+	
+	
+	if (empty($_SESSION["req1"])){
+			//first request
+			$_SESSION["req1"] = $req;
+		} else if (empty($_SESSION["req2"])){
+			//second request
+			$_SESSION["req2"] = $req;
+		} else if (empty($_SESSION["req3"])){
+			//compare them here
+			$_SESSION["req3"] = $req;
+			session_destroy();
+			$query = $pdo->prepare('INSERT INTO teste_sustek VALUES (?,?,?,?)');
+			$query->execute($req);
+		}
+	
 });
 $app->run();
 ?>
