@@ -69,16 +69,21 @@ $app->map(['POST'],'/dados', function (Request $request, Response $response, arr
 	
 	$parsed_body = json_decode($request->getBody(),true);
 	
-	$id = $parsed_body['id'];
+	$id = $parsed_body['id_sensor'];
 	$c = $parsed_body['corrente'];
 	$v = $parsed_body['tensao'];
 	$p = $parsed_body['potencia'];
+	$h = $parsed_body['hora'];
+	$d = $parsed_body['data'];
 	
-	echo "id: $id, corrente: $c, tensão: $v, potência: $p \n";
+	//$data_hora = " ' " . $d .' '. $h . " ' " ;
+	$data_hora =  $d .' '. $h;
 	
-	array_push($req,$id,$c,$v,$p);
+	echo "id: $id, corrente: $c, tensão: $v, potência: $p data_hora:$data_hora \n";
 	
-	$query = $pdo->prepare('INSERT INTO teste_sustek VALUES (?,?,?,?)');
+	array_push($req,$id,$c,$v,$p,$data_hora);
+	
+	$query = $pdo->prepare('INSERT INTO teste_sustek (id_sensor,corrente,tensao,potencia,hora_medicao) VALUES (?,?,?,?,?)');
 	
 	if (empty($_SESSION["req1"])){
 			//first request
