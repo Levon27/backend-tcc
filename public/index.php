@@ -113,5 +113,27 @@ $app->map(['POST'],'/dados', function (Request $request, Response $response, arr
 		}
 	
 });
+
+$app->map(['GET'],'/{id}/{corrente}/{tensao}/{potencia}', function (Request $request, Response $response, array $args){
+		
+	require_once("db.php");
+	
+	$req = array();
+	
+	$id = $request->getAttribute('id');
+	$c = $request->getAttribute('corrente');
+	$v = $request->getAttribute('tensao');
+	$p = $request->getAttribute('potencia');
+	
+	echo "id: $id, corrente: $c, tensão: $v, potência: $p \n";
+	
+	array_push($req,$id,$c,$v,$p);
+	
+	$query = $pdo->prepare('INSERT INTO teste_sustek VALUES (?,?,?,?)');
+	$query->execute($req);
+	
+		
+});
+
 $app->run();
 ?>
