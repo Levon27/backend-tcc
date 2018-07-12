@@ -17,6 +17,10 @@ $app->map(['GET','POST'],'/hello/{name}', function (Request $request, Response $
 	echo "Ola, $nome";
 });
 
+$app->map(['POST'],'/hello', function (Request $request, Response $response, array $args) {
+	echo "funfou o post" ;
+});
+
 $app->map(['GET'],'/{id}/{corrente}/{tensao}/{potencia}', function (Request $request, Response $response, array $args){
 		
 	require_once("db.php");
