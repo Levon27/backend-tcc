@@ -1,6 +1,6 @@
 <?php
 	$host = '127.0.0.1';
-	$db   = 'teste_sustek';
+	$db   = 'sustek';
 	$user = 'root';
 	$pass = '';
 	$charset = 'utf8mb4';

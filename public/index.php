@@ -22,7 +22,7 @@ $app->map(['POST'],'/hello', function (Request $request, Response $response, arr
 });
 
 $app->map(['GET'],'/{id}/{corrente}/{tensao}/{potencia}', function (Request $request, Response $response, array $args){
-		
+	//ROTA DESATUALIZADA COM O BD
 	require_once("db.php");
 	
 	$req = array();
@@ -36,7 +36,7 @@ $app->map(['GET'],'/{id}/{corrente}/{tensao}/{potencia}', function (Request $req
 	
 	array_push($req,$id,$c,$v,$p);
 	
-	$query = $pdo->prepare('INSERT INTO teste_sustek VALUES (?,?,?,?)');
+	$query = $pdo->prepare('INSERT INTO dados_consumo VALUES (?,?,?,?)');
 	$query->execute($req);
 	
 		
@@ -62,7 +62,7 @@ $app->map(['POST'],'/dados', function (Request $request, Response $response, arr
 	
 	array_push($req,$id,$c,$v,$p,$data_hora);
 	
-	$query = $pdo->prepare('INSERT INTO teste_sustek (id_sensor,corrente,tensao,potencia,data_hora) VALUES (?,?,?,?,?)');
+	$query = $pdo->prepare('INSERT INTO dados_consumo (id_sensor,corrente,tensao,potencia,data_hora) VALUES (?,?,?,?,?)');
 	
 	$query->execute($req);
 	
