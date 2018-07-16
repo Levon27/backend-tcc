@@ -52,13 +52,15 @@ $app->map(['POST'],'/dados', function (Request $request, Response $response, arr
 	$c = $parsed_body['corrente'];
 	$v = $parsed_body['tensao'];
 	$p = $parsed_body['potencia'];
-	$h = $parsed_body['hora'];
-	$d = $parsed_body['data'];
+	//$h = $parsed_body['hora'];
+	//$d = $parsed_body['data'];
 	
 	//$data_hora = " ' " . $d .' '. $h . " ' " ;
-	$data_hora =  $d .' '. $h;
 	
-	echo "id: $id, corrente: $c, tensão: $v, potência: $p data_hora:$data_hora \n";
+	$data_hora = new DateTime("now", new DateTimeZone('America/Sao_Paulo'));
+	$data_hora = $data_hora->format('Y-m-d H:i:s');
+	
+	echo "id: $id, corrente: $c, tensão: $v, potência: $p hora_medicao:$data_hora \n";
 	
 	array_push($req,$id,$c,$v,$p,$data_hora);
 	
