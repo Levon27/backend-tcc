@@ -11,6 +11,8 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 $app = new \Slim\App;
 
+require_once("popula_db.php");
+
 $app->map(['GET','POST'],'/hello/{name}', function (Request $request, Response $response, array $args) {
 	$nome = $args['name'];
 	
@@ -39,8 +41,8 @@ $app->map(['GET'],'/{id}/{corrente}/{tensao}/{potencia}', function (Request $req
 	$query = $pdo->prepare('INSERT INTO dados_consumo VALUES (?,?,?,?)');
 	$query->execute($req);
 	
-		
 });
+
 $app->map(['POST'],'/dados', function (Request $request, Response $response, array $args) {
 	require_once("db.php");
 	
@@ -69,6 +71,8 @@ $app->map(['POST'],'/dados', function (Request $request, Response $response, arr
 	$query->execute($req);
 	
 });
+
+
 
 $app->run();
 ?>
