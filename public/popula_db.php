@@ -6,18 +6,20 @@ $app->map(['GET'],'/popula', function (Request $request, Response $response, arr
 	
 	$data_time = new DateTime("now", new DateTimeZone('America/Sao_Paulo'));
 	
-	$pascoa = dataPascoa(2019);
-	$corpus_christi = dataCorpusChristi(2018);
-	$carnaval = dataCarnaval(2019);
-	$sexta_santa = dataSextaSanta(2018);
-	echo " Pascao: $pascoa <br>";
+	$pascoa = converte(dataPascoa(2019));
+	$corpus_christi = converte(dataCorpusChristi(2018));
+	$carnaval = converte(dataCarnaval(2019));
+	$sexta_santa = converte(dataSextaSanta(2018));
+	
+	
+	echo " Pascoa: $pascoa <br>";
 	echo " Carnaval: $carnaval <br>";
 	echo " corpus_christi: $corpus_christi <br>";
 	echo " Sexta Santa: $sexta_santa <br>";
 	
 	$i = 0;
 	
-	$feriados = array("01-01", $carnaval, $sexta_santa, $pascoa, $corpus_christi,
+	$feriados = array("01-01", $carnaval, $pascoa,$sexta_santa,$corpus_christi,
 	"04-21", "05-01", "06-12" ,"07-09", "07-16", "09-07", "10-12", "11-02", 
 	"11-15", "12-24", "12-25", "12-31");
 
@@ -72,7 +74,6 @@ function dataPascoa($ano=false, $form="Y-m-d") {
 function dataSextaSanta($ano=false, $form="Y-m-d") {
 	$ano=$ano?$ano:date("Y");
 	$a=explode("-", dataPascoa($ano));
-	
 	return date($form, mktime(0,0,0,$a[1],$a[2]-2,$a[0]));
 } 
 
@@ -88,4 +89,8 @@ function dataCarnaval($ano=false, $form="Y-m-d") {
 	return date($form, mktime(0,0,0,$a[1],$a[2]-47,$a[0]));
 }
 
+function converte($data){
+	$d = explode("-",$data);
+	return $d[1] . '-' . $d[2];
+}
 ?>
