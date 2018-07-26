@@ -22,6 +22,7 @@ $app->map(['GET'],'/popula', function (Request $request, Response $response, arr
 	$corpus_christi = converte(dataCorpusChristi(2018));
 	$carnaval = converte(dataCarnaval(2018));
 	$sexta_santa = converte(dataSextaSanta(2018));
+	$ano = 2018;
 	
 	//termina de marcar os dias não uteis de 2018
 	while ($data_time->format('Y')=="2018"){
@@ -36,7 +37,7 @@ $app->map(['GET'],'/popula', function (Request $request, Response $response, arr
 	
 	
 	//continuando com outros anos
-	while ($ano = $data_time->format("Y")<="2023"){
+	while ($data_time->format("Y")<="2023"){
 		
 		$data = $data_time->format('Y-m-d');
 		$data_mes_dia = $data_time->format('m-d');
@@ -48,7 +49,9 @@ $app->map(['GET'],'/popula', function (Request $request, Response $response, arr
 		
 		// troca de ano
 		if ($data_mes_dia== "01-01"){
-			echo "Novo ano: $ano <br>";
+			$ano++;
+			echo "<br> Novo ano: $ano <br>";
+			
 			$pascoa = converte(dataPascoa($ano));
 			$corpus_christi = converte(dataCorpusChristi($ano));
 			$carnaval = converte(dataCarnaval($ano));
@@ -64,8 +67,8 @@ $app->map(['GET'],'/popula', function (Request $request, Response $response, arr
 			"11-15", "12-24", "12-25", "12-31");
 		}
 		$data_time->modify('+1 day');
-		//echo "$data <br>";
-		echo "ano: $ano <br>";
+		
+		
 	}
 	
 	
