@@ -1,5 +1,8 @@
 <?php
-session_start();
+
+if(!isset($_SESSION)) { 
+    session_start(); 
+} 
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
@@ -12,6 +15,8 @@ header("Access-Control-Allow-Headers: Content-Type");
 $app = new \Slim\App;
 
 require_once("popula_db.php");
+require 'usuario.php';
+require 'funcao_logado.php';
 
 $app->map(['GET','POST'],'/hello/{name}', function (Request $request, Response $response, array $args) {
 	$nome = $args['name'];
