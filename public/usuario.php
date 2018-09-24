@@ -1,7 +1,8 @@
 <?php
 
 if(!isset($_SESSION)) { 
-    session_start(); 
+    session_start();
+	$_SESSION["id"] = "a";	
 } 
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
@@ -12,7 +13,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 // header("Access-Control-Allow-Headers: Content-Type");
 
 $app->map(['POST'],'/usuario', function (Request $request, Response $response, array $args) {
-	//echo "criando usuario...";
+	// echo "criando usuario... <br>";
 	
 	require_once("db.php");
 	$registro = json_decode($request->getBody(),true);
@@ -25,33 +26,40 @@ $app->map(['POST'],'/usuario', function (Request $request, Response $response, a
 	$senha = $registro["senha"];
 	$cidade = $registro["cidade"];
 	
-	var_dump ("nome: $nome ");
-	var_dump ("email: $email ");
-	var_dump ("senha: $senha ");
-	var_dump ("cidade: $cidade ");
+	$hash_senha = md5($senha);
+	echo($hash_senha);
+	
+	// var_dump ("nome: $nome ");
+	// var_dump ("email: $email ");
+	// var_dump ("senha: $senha ");
+	// var_dump ("cidade: $cidade ");
 	
 	
-	$query = $pdo->prepare("INSERT INTO dados_usuario (nome,cidade,email,senha,data_inical) SELECT * FROM ( SELECT ?,?,?,?,?) AS temp WHERE NOT EXISTS (SELECT email FROM dados_usuario WHERE email=?)");
-	$query->execute([$nome,$cidade,$email,$senha,$data_inicial,$email]);
-	
+	$query = $pdo->prepare("INSERT INTO dados_usuario (nome,cidade,email,senha,hash_senha,data_inicial) SELECT * FROM ( SELECT ?,?,?,?,?,?) AS temp WHERE NOT EXISTS (SELECT email FROM dados_usuario WHERE email=?)");
+	$query->execute([$nome,$cidade,$email,$senha,$hash_senha,$data_inicial,$email]);
+
+	// echo "<br> executou query ";
 	return $response;
 });
 
 $app->map(['POST'],'/login', function (Request $request, Response $response, array $args) {
 	require_once("db.php");
 	
-	if (!(empty($_SESSION["id"]))){
+	if (logado()){
 		echo "ja logou";
 		return $response->withStatus(200); //usuario ja logado
 		
+	}
+	else{
+		echo "nao esta logado <br>";
 	}
 	
 	$registro = json_decode($request->getBody(),true);
 	$login = $registro["login"];
 	$senha = $registro["pass"];
-	
-	$query = $pdo->prepare('SELECT * FROM dados_usuario WHERE email=? AND senha=?');
-	$query->execute([$login,$senha]);
+	$hash_senha = md5($senha);
+	$query = $pdo->prepare('SELECT * FROM dados_usuario WHERE email=? AND hash_senha=?');
+	$query->execute([$login,$hash_senha]);
 	
 	if ($data = $query->fetch(PDO::FETCH_ASSOC)){
 		echo "entrou";
