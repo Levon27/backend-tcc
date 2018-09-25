@@ -5,7 +5,7 @@
 			session_start(); 
 		}
 		
-		if (empty($_SESSION["id"])){
+		if (!isset($_SESSION["id"])){
 			echo "usuario não logado <br>";
 			session_destroy();
 			return false;

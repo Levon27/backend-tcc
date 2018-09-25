@@ -77,7 +77,10 @@ $app->map(['POST'],'/dados', function (Request $request, Response $response, arr
 	
 });
 
-
+$app->map(['DELETE'],'/session', function (Request $request, Response $response, array $args) { 
+	session_destroy();
+	unset($_SESSION);
+});
 
 $app->run();
 ?>

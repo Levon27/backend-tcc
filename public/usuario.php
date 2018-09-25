@@ -2,7 +2,6 @@
 
 if(!isset($_SESSION)) { 
     session_start();
-	$_SESSION["id"] = "a";	
 } 
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
@@ -45,8 +44,8 @@ $app->map(['POST'],'/usuario', function (Request $request, Response $response, a
 $app->map(['POST'],'/login', function (Request $request, Response $response, array $args) {
 	require_once("db.php");
 	
-	if (logado()){
-		echo "ja logou";
+	if (!empty($_SESSION["id"])){
+		// echo ("ja logou");
 		return $response->withStatus(200); //usuario ja logado
 		
 	}
