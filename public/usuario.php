@@ -1,8 +1,9 @@
 <?php
 
-if(!isset($_SESSION)) { 
-    session_start();
-} 
+// if(!isset($_SESSION)) { 
+    // session_start();
+// } 
+// session_start();
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
@@ -61,8 +62,11 @@ $app->map(['POST'],'/login', function (Request $request, Response $response, arr
 	$query->execute([$login,$hash_senha]);
 	
 	if ($data = $query->fetch(PDO::FETCH_ASSOC)){
-		echo "entrou";
-		$_SESSION["id"]  = $data["email"]; //usuario encontrado
+		$_SESSION['email'] = $data["email"]; //usuario encontrado
+		$_SESSION['id'] = $data['id_usuario'];
+		$email = $_SESSION['email'];
+		$id = $_SESSION['id'];
+		echo "Bem-vindo, $email. Seu id é : $id";
 	}else 
 		return $response->withStatus(401); //login ou senha incorretos
 	
@@ -74,9 +78,10 @@ $app->map(['POST'],'/login', function (Request $request, Response $response, arr
 $app->map(['POST'],'/logout', function (Request $request, Response $response, array $args) {
 	//var_dump ($_SESSION);
 	if (logado()){
-		echo "deslogando...";
+		$id_sessao = $_SESSION["id"];
+		echo "Usuario $id_sessao deslogando...";
 		session_destroy();	
-		return $response->withStatus(204);
+		return $response->withStatus(200);
 	} else {
 		echo "ja esta deslogado";
 		return $response->withStatus(200);

@@ -17,7 +17,7 @@ $app = new \Slim\App;
 require_once("popula_db.php");
 require 'usuario.php';
 require 'funcao_logado.php';
-
+require 'sensor.php';
 $app->map(['GET','POST'],'/hello/{name}', function (Request $request, Response $response, array $args) {
 	$nome = $args['name'];
 	
