@@ -60,16 +60,22 @@ $app->map(['POST'],'/dados', function (Request $request, Response $response, arr
 	$v = $parsed_body['tensao'];
 	$p = $parsed_body['potencia'];
 
+	// curl_setopt($ch, CURLOPT_URL,'http://api.openweathermap.org/data/2.5/weather?id=3449324&APPID=8013fa9bd47fd985c1fd6854c635c5e8');
+	$ch = curl_init('http://api.openweathermap.org/data/2.5/weather?id=5913490&APPID=8013fa9bd47fd985c1fd6854c635c5e8');
+	curl_setopt($ch,CURLOPT_RETURNTRANSFER,1); // Do not send to screen
+
+	$resp_parseada = json_decode(curl_exec($ch),true);
+	curl_close($ch);
+
+	// var_dump($resp_parseada);
 	
-	$resp = $_GET['http://api.openweathermap.org/data/2.5/weather?id=5913490&APPID=8013fa9bd47fd985c1fd6854c635c5e8'];
-	$resp_parseada = json_decode($resp);
-	$temp = $resp_parseada['main']['temp'];
+	$temp = $resp_parseada['main']['temp']-273; //substrai 273 para transformar a temperatura de Kelvin para Celsius
 	//$data_hora = " ' " . $d .' '. $h . " ' " ;
 	
 	$data_hora = new DateTime("now", new DateTimeZone('America/Sao_Paulo'));
 	$data_hora = $data_hora->format('Y-m-d H:i:s');
 	
-	echo "id: $id, corrente: $c, tensão: $v, potência: $p hora medicao:$data_hora  Temperatura: $temp <br>";
+	echo "<br> id: $id, corrente: $c, tensão: $v, potência: $p hora medicao:$data_hora  Temperatura: $temp <br>";
 	
 	array_push($req,$id,$c,$v,$p,$temp,$data_hora);
 	
