@@ -59,20 +59,21 @@ $app->map(['POST'],'/dados', function (Request $request, Response $response, arr
 	$c = $parsed_body['corrente'];
 	$v = $parsed_body['tensao'];
 	$p = $parsed_body['potencia'];
-	//$h = $parsed_body['hora'];
-	//$d = $parsed_body['data'];
+
 	
+	$resp = $_GET['http://api.openweathermap.org/data/2.5/weather?id=5913490&APPID=8013fa9bd47fd985c1fd6854c635c5e8'];
+	$resp_parseada = json_decode($resp);
+	$temp = $resp_parseada['main']['temp'];
 	//$data_hora = " ' " . $d .' '. $h . " ' " ;
 	
 	$data_hora = new DateTime("now", new DateTimeZone('America/Sao_Paulo'));
 	$data_hora = $data_hora->format('Y-m-d H:i:s');
 	
-	echo "id: $id, corrente: $c, tensão: $v, potência: $p hora_medicao:$data_hora \n";
+	echo "id: $id, corrente: $c, tensão: $v, potência: $p hora medicao:$data_hora  Temperatura: $temp <br>";
 	
-	array_push($req,$id,$c,$v,$p,$data_hora);
+	array_push($req,$id,$c,$v,$p,$temp,$data_hora);
 	
-	$query = $pdo->prepare('INSERT INTO dados_consumo (id_sensor,corrente,tensao,potencia,data_hora) VALUES (?,?,?,?,?)');
-	
+	$query = $pdo->prepare('INSERT INTO dados_consumo (id_sensor,corrente,tensao,potencia,temp,data_hora) VALUES (?,?,?,?,?,?)');
 	$query->execute($req);
 	
 });
