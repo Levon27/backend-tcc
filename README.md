@@ -12,7 +12,7 @@ Cria o usuário
    
     "nome"
   
-    "mail"
+    "email"
   
     "senha" (plain text)
   
