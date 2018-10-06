@@ -10,13 +10,13 @@ Cria o usuário
 
    {
    
-    "nome"
+    "nome":"jonas silva"
   
-    "email"
+    "email":"jonas@maua.br"
   
-    "senha" (plain text)
+    "senha":"jonas123456"
   
-    "cidade"
+    "cidade":"São Caetano"
   
    }
 
@@ -38,7 +38,7 @@ Desloga. Sem parâmetros
 
 - /usuario/sensor: <b>GET </b>
 
-Retorna todos os sensores que o usário possui cadastrados. Necessita estar logado
+Retorna todos os sensores que o usário possui cadastrados.Nao possui parametros. Necessita estar logado
 
 
 <b>Sensor: </b>
@@ -49,9 +49,9 @@ Cadastra um sensor
 
 {
 
-    "id_sensor": Se possível, enviar o MAC Address do Node
+    "id_sensor": "123456789ab"  /* Se possível, enviar o MAC Address do Node */
     
-    "equipamento": 
+    "equipamento": "geladeira" 
     
 }
 
