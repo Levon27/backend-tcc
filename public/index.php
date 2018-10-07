@@ -18,6 +18,7 @@ require_once("popula_db.php");
 require 'usuario.php';
 require 'funcao_logado.php';
 require 'sensor.php';
+require 'func_mail.php';
 $app->map(['GET','POST'],'/hello/{name}', function (Request $request, Response $response, array $args) {
 	$nome = $args['name'];
 	
@@ -89,5 +90,22 @@ $app->map(['DELETE'],'/session', function (Request $request, Response $response,
 	unset($_SESSION);
 });
 
+$app->map(['POST'],'/email', function (Request $request, Response $response, array $args) {
+	if(!isset($_SESSION["id"])){
+		echo "Não logou";
+		return $response->withStatus(401); //usuario noa logado
+	}
+	
+	$email = 'chahestian@hotmail.com';
+	$nome = 'Levon';
+	$msg = '';
+	
+	envia_email($email,$nome,$msg);
+	
+	return $response->withStatus(200);
+	
+});
+
 $app->run();
+
 ?>
