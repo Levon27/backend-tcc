@@ -26,9 +26,8 @@ Efetua login. Autenticação é feita por hash md5
 
    {
 
-      "email"
-  
-      "senha"
+      "email":"teste@teste.br",
+      "senha":"senha123"
   
     }
 
@@ -36,10 +35,19 @@ Efetua login. Autenticação é feita por hash md5
 
 Desloga. Sem parâmetros
 
+- /email: <b> POST </b>
+
+    
+    {    
+      "email":"destinatario@sustek.br",
+      
+      "msg":"msg a ser enviada"
+      
+    
+
 - /usuario/sensor: <b>GET </b>
 
 Retorna todos os sensores que o usário possui cadastrados.Nao possui parametros. Necessita estar logado
-
 
 <b>Sensor: </b>
 
