@@ -91,14 +91,16 @@ $app->map(['DELETE'],'/session', function (Request $request, Response $response,
 });
 
 $app->map(['POST'],'/email', function (Request $request, Response $response, array $args) {
+	
 	if(!isset($_SESSION["id"])){
 		echo "Não logou";
 		return $response->withStatus(401); //usuario noa logado
 	}
 	
-	$email = 'chahestian@hotmail.com';
-	$nome = 'Levon';
-	$msg = '';
+	$request = json_decode($request->getBody(),true);
+	
+	$msg = $request['msg'];
+	$email = $request['email'];
 	
 	envia_email($email,$nome,$msg);
 	
