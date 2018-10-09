@@ -43,7 +43,11 @@ Desloga. Sem parâmetros
       
       "msg":"msg a ser enviada"
       
-    
+   
+ - /usuario: <b>GET </b>
+ 
+ retorna todas as informações do usuario que esta logado
+
 
 - /usuario/sensor: <b>GET </b>
 
