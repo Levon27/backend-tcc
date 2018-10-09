@@ -99,13 +99,30 @@ $app->map(['GET'],'/usuario/sensor', function (Request $request, Response $respo
 	$query = $pdo->prepare('SELECT * FROM sensor WHERE proprietario = ?');
 	$query->execute([$id]);
 	
-	
 	if ($sensor = $query->fetchAll()){
 		return $response->withJson($sensor,200);
 	}else{
-		return $response->withStatus(404);
-		
-
-	
+		return $response->withStatus(404);	
 	}
 });
+
+$app->map(['GET'],'/usuario', function (Request $request, Response $response, array $args) {
+	require_once("db.php");
+	
+	if(!isset($_SESSION["id"])){
+		echo "Não logou";
+		return $response->withStatus(401); //usuario noa logado
+	}
+	
+	$id = $_SESSION["id"];
+	$query = $pdo->prepare('SELECT * FROM dados_usuario WHERE id_usuario = ?');
+	$query->execute([$id]);
+	
+	if ($usuario = $query->fetch(PDO::FETCH_ASSOC)){
+		return $response->withJson($usuario,200);
+	} else{
+		return $response->withStatus(404);
+	}
+});
+
+

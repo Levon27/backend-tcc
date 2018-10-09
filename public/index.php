@@ -91,7 +91,7 @@ $app->map(['DELETE'],'/session', function (Request $request, Response $response,
 });
 
 $app->map(['POST'],'/email', function (Request $request, Response $response, array $args) {
-	
+	//nome,sobrenome, e-mail, telefone, mensagem
 	if(!isset($_SESSION["id"])){
 		echo "Não logou";
 		return $response->withStatus(401); //usuario noa logado
@@ -101,6 +101,9 @@ $app->map(['POST'],'/email', function (Request $request, Response $response, arr
 	
 	$msg = $request['msg'];
 	$email = $request['email'];
+	$nome = $request['nome'];
+	$sobrenome =  $reqeust['sobrenome'];
+	$telefone =  $reqeust['tel'];
 	
 	envia_email($email,$nome,$msg);
 	
