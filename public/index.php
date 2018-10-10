@@ -25,6 +25,10 @@ $app->map(['GET','POST'],'/hello/{name}', function (Request $request, Response $
 	echo "Ola, $nome";
 });
 
+$app->map(['GET'],'/', function (Request $request, Response $response, array $args) use ($app){
+	return $response->withRedirect('http://u643580869.hostingerapp.com/index.html');
+});
+
 $app->map(['POST'],'/hello', function (Request $request, Response $response, array $args) {
 	echo "funfou o post" ;
 });
