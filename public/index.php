@@ -19,6 +19,31 @@ require 'usuario.php';
 require 'funcao_logado.php';
 require 'sensor.php';
 require 'func_mail.php';
+
+/*
+X consumo total/mes (todos medidores)
+X media consumo/mes (todos medidores)
+X mes com maior consumo (todos medidores)
+X mes com menor consumo (todos medidores)
+consumo por medidor/mes
+X consumo por medidor desde sempre
+*/
+
+
+// QUERIES
+
+// consumo total/mes (todos medidores)
+//SELECT SUM(potencia),YEAR(data_hora) AS ano,MONTH(data_hora) AS mes FROM `dados_consumo` WHERE MONTH(data_hora) = #MES# GROUP BY YEAR(data_hora),MONTH(data_hora)
+
+// media consumo/mes (todos medidores)
+//SELECT AVG(potencia),YEAR(data_hora) AS ano,MONTH(data_hora) AS mes FROM `dados_consumo` WHERE MONTH(data_hora) = #MES# GROUP BY YEAR(data_hora),MONTH(data_hora)
+
+// mes com maior/menor consumo (todos medidores)
+// SELECT MAX/MIN(consumo) FROM (SELECT SUM(potencia) AS consumo,YEAR(data_hora) AS ano,MONTH(data_hora) AS mes FROM `dados_consumo` AS consumo_mes GROUP BY YEAR(data_hora),MONTH(data_hora)) AS maior_consumo
+
+// consumo por medidor desde sempre
+// SELECT SUM(potencia),id_sensor FROM dados_consumo GROUP BY id_sensor
+
 $app->map(['GET','POST'],'/hello/{name}', function (Request $request, Response $response, array $args) {
 	$nome = $args['name'];
 	
