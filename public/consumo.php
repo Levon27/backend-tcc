@@ -2,11 +2,11 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 /*
- consumo total/mes (todos medidores) - alterar no python anywhere
- media consumo/mes (todos medidores) - alterar no python anywhere
-X mes com maior consumo (todos medidores)
-X mes com menor consumo (todos medidores)
- consumo por medidor/mes			- alterar no python anywhere
+ consumo total/mes (todos medidores)
+X media consumo/mes (todos medidores) 
+X mes com maior consumo (todos medidores) 
+X mes com menor consumo (todos medidores) 
+X consumo por medidor/mes			
 X consumo por medidor desde sempre - servidor python
 */
 
@@ -60,13 +60,41 @@ $app->map(['GET'],'/consumo/menor', function (Request $request, Response $respon
 	
 	return $response->withJson($resp);
 });
-$app->map(['GET'],'/consumo/media/{mes}', function (Request $request, Response $response, array $args) {
+
+$app->map(['GET'],'/consumo/total/{mes}', function (Request $request, Response $response, array $args) {
 	require('db.php');
-	$arr = array();	
-	$dados = consulta('http://raul0010.pythonanywhere.com/consulta/*');  //*** ALTERAR NO PY ANYWHERE
+	$arr = array();
+	$mes = $args['mes'];
+	$dados = consulta('http://raul0010.pythonanywhere.com/consulta/*');
 	
-	foreach($dados['consulta'] as $valor)
-		array_push($arr,$valor['potencia']);
+	foreach($dados['consulta'] as $valor){
+		$mes_medicao = date('m',strtotime($valor['data']));
+		if ($mes_medicao == $mes)
+			array_push($arr,$valor['potencia']);
+	}
+	$total = array_sum($arr);
+	
+	$resp= array("resultado"=>$total);
+	
+	return $response->withJson($resp);
+});
+
+//media conusmo medidor/mes
+$app->map(['GET'],'/consumo/media/{medidor}/{mes}', function (Request $request, Response $response, array $args) {
+	require('db.php');
+	$mes = $args['mes'];
+	$medidor = $args['medidor'];
+	$arr = array();	
+	$url = 'http://raul0010.pythonanywhere.com/consulta/'.$medidor;
+	$dados = consulta($url);  
+	foreach($dados['consulta'] as $valor){
+		$mes_medicao = date('m',strtotime($valor['data']));
+		if ($mes_medicao == $mes)
+			array_push($arr,$valor['potencia']);
+	}
+	
+	if (array_sum($arr)==0)
+		return $response->withStatus(404); //sem dados no banco
 	
 	$media = array_sum($arr)/count($arr);
 	$resp = array("resultado"=>$media);
@@ -74,25 +102,35 @@ $app->map(['GET'],'/consumo/media/{mes}', function (Request $request, Response $
 	return $response->withJson($resp);
 });
 
-$app->map(['GET'],'/consumo/total/{mes}', function (Request $request, Response $response, array $args) {
+
+// consumo por medidor/mes	
+$app->map(['GET'],'/consumo/total/{medidor}/{mes}', function (Request $request, Response $response, array $args) {
 	require('db.php');
+	$mes = $args['mes'];
+	$medidor = $args['medidor'];
 	$arr = array();	
-	$dados = consulta('http://raul0010.pythonanywhere.com/consulta/*'); //*** ALTERAR NO PY ANYWHERE
+	$url = 'http://raul0010.pythonanywhere.com/consulta/'.$medidor;
+	$dados = consulta($url);  
+	foreach($dados['consulta'] as $valor){
+		$mes_medicao = date('m',strtotime($valor['data']));
+		if ($mes_medicao == $mes)
+			array_push($arr,$valor['potencia']);
+	}
 	
-	foreach($dados['consulta'] as $valor)
-		array_push($arr,$valor['potencia']);
+	if (array_sum($arr)==0)
+		return $response->withStatus(404); //sem dados no banco
 	
-	$total = array_sum($arr);
-	$resp = array("resultado"=>$total);
+	$media = array_sum($arr);
+	$resp = array("resultado"=>$media);
 	
 	return $response->withJson($resp);
 });
+
 
 function consulta ($url){
 	$ch = curl_init($url);
 	curl_setopt($ch,CURLOPT_RETURNTRANSFER,1); // Do not send to screen
 	$resp_parseada = json_decode(curl_exec($ch),true);
-	curl_close($ch);
-	
+	curl_close($ch);	
 	return $resp_parseada;
 }
