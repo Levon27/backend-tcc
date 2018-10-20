@@ -67,3 +67,21 @@ Cadastra um sensor
     
 }
 
+- /consumo/total/{mes}: <b>GET </b>
+
+retorna consumo total de todos os medidores no mes
+
+- /consumo/media/{medidor}/{mes}: <b>GET </b>
+
+retorna média de todo o consumo no mÊs
+
+- /consumo/total/{medidor}/{mes}: <b>GET </b>
+
+total conusmido pelo medidor
+
+- /consumo/media/{medidor}/{mes}: <b>GET </b>
+
+média do consumo do meiddor no mês
+
+
+
