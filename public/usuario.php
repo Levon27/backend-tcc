@@ -93,17 +93,19 @@ $app->map(['POST'],'/logout', function (Request $request, Response $response, ar
 $app->map(['GET'],'/usuario/sensor', function (Request $request, Response $response, array $args) {
 	//Retorna todos os sensores do usuario
 	require('db.php');
-	
 	$id = $_SESSION['id'];
 	
 	$query = $pdo->prepare('SELECT * FROM sensor WHERE proprietario = ?');
 	$query->execute([$id]);
 	
+	
 	if ($sensor = $query->fetchAll()){
-		return $response->withJson($sensor,200);
+		$_SESSION['sensores'] = $sensor;
 	}else{
 		return $response->withStatus(404);	
 	}
+	// var_dump($_SESSION['sensores']);
+	return $response->withJson($sensor,200);
 });
 
 $app->map(['GET'],'/usuario', function (Request $request, Response $response, array $args) {

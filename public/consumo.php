@@ -26,7 +26,7 @@ X consumo por medidor desde sempre - servidor python
 // SELECT SUM(potencia),id_sensor FROM dados_consumo GROUP BY id_sensor
 
 
-
+// ** alterar os dois de baixo ** //
 $app->map(['GET'],'/consumo/maior', function (Request $request, Response $response, array $args) {
 	require('db.php');
 	$arr = array();
@@ -66,7 +66,6 @@ $app->map(['GET'],'/consumo/total/{mes}', function (Request $request, Response $
 	$arr = array();
 	$mes = $args['mes'];
 	$dados = consulta('http://raul0010.pythonanywhere.com/consulta/*');
-	
 	foreach($dados['consulta'] as $valor){
 		$mes_medicao = date('m',strtotime($valor['data']));
 		if ($mes_medicao == $mes)
@@ -74,8 +73,7 @@ $app->map(['GET'],'/consumo/total/{mes}', function (Request $request, Response $
 	}
 	$total = array_sum($arr);
 	
-	$resp= array("resultado"=>$total);
-	
+	$resp = array("resultado"=>$total);
 	return $response->withJson($resp);
 });
 
@@ -126,7 +124,25 @@ $app->map(['GET'],'/consumo/total/{medidor}/{mes}', function (Request $request, 
 	return $response->withJson($resp);
 });
 
-
+$app->map(['GET'],'/gasto', function (Request $request, Response $response, array $args) {
+	require('db.php');
+	$dados = array();
+	$consumo = 0;
+	$sensores = $_SESSION['sensores'];
+	foreach($sensores as $sensor){
+		$url = 'http://raul0010.pythonanywhere.com/consulta/'.$sensor['id_sensor'];
+		$dados = consulta($url);
+		foreach ($dados['consulta'] as $medicao){
+			echo $medicao['potencia'] . '/';
+			$consumo += $medicao['potencia']*10/(60*1000); // conusmo estimado para cada entrada de 10 minutos (em kWh)
+		}
+	}
+	$custo = 0.21276+0.27087+0.05;
+	$gasto_estimado = $consumo*$custo;
+	$resp = array("gasto"=>$gasto_estimado);
+	
+	return $response->withJson($resp);
+});
 function consulta ($url){
 	$ch = curl_init($url);
 	curl_setopt($ch,CURLOPT_RETURNTRANSFER,1); // Do not send to screen
