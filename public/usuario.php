@@ -67,6 +67,9 @@ $app->map(['POST'],'/login', function (Request $request, Response $response, arr
 		$email = $_SESSION['email'];
 		$id = $_SESSION['id'];
 		echo "Bem-vindo, $email. Seu id é : $id";
+		$query = $pdo->prepare('SELECT * FROM sensor WHERE proprietario = ?');
+		$query->execute([$id]);
+		$_SESSION['sensores'] = $query->fetchAll();
 	}else 
 		return $response->withStatus(401); //login ou senha incorretos
 	
@@ -94,7 +97,6 @@ $app->map(['GET'],'/usuario/sensor', function (Request $request, Response $respo
 	//Retorna todos os sensores do usuario
 	require('db.php');
 	$id = $_SESSION['id'];
-	
 	$query = $pdo->prepare('SELECT * FROM sensor WHERE proprietario = ?');
 	$query->execute([$id]);
 	
@@ -104,7 +106,6 @@ $app->map(['GET'],'/usuario/sensor', function (Request $request, Response $respo
 	}else{
 		return $response->withStatus(404);	
 	}
-	// var_dump($_SESSION['sensores']);
 	return $response->withJson($sensor,200);
 });
 
