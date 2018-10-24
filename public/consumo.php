@@ -173,26 +173,32 @@ $app->map(['GET'],'/consumo/anual', function (Request $request, Response $respon
 			$resp[$mes_medicao-1] += $medicao['potencia']/(60*1000);
 		}
 	}
-	
 	return $response->withJson($resp);
 });
-//alterar para diario
+
 $app->map(['GET'],'/gasto', function (Request $request, Response $response, array $args) { //alterar para diario
 	require('db.php');
 	$dados = array();
 	$consumo = 0;
+	$data_atual = new DateTime("now", new DateTimeZone('America/Sao_Paulo'));
+	$dia_atual = $data_atual->format('d');
+	$mes_atual = $data_atual->format('m');
 	$sensores = $_SESSION['sensores'];
 	foreach($sensores as $sensor){
 		$url = 'http://raul0010.pythonanywhere.com/consulta/'.$sensor['id_sensor'];
 		$dados = consulta($url);
 		foreach ($dados['consulta'] as $medicao){
 			// echo $medicao['potencia'] . '/';
-			$consumo += $medicao['potencia']/(60*1000); // conusmo estimado para cada entrada de 1 minutos (em kWh)
+			$dia_medicao = (int) date('d',strtotime($medicao['data']));
+			$mes_medicao = (int) date('n',strtotime($medicao['data']));
+			if ($dia_medicao == $dia_atual and $mes_atual == $mes_medicao)
+				$consumo += $medicao['potencia'];/(60*1000); // conusmo estimado para cada entrada de 1 minutos (em kWh)
 		}
 	}
 	$custo = 0.21276+0.27087+0.05;
 	$gasto_estimado = $consumo*$custo;
-	$resp = array("gasto"=>$gasto_estimado);
+	$resp = array("gasto"=>$consumo);
+	// $resp = array("gasto"=>$gasto_estimado);
 	
 	return $response->withJson($resp);
 });
