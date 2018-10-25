@@ -32,37 +32,61 @@ X consumo por medidor desde sempre - servidor python
 
 // ** alterar os dois de baixo ** //
 $app->map(['GET'],'/consumo/maior', function (Request $request, Response $response, array $args) {
-	require('db.php');
-	$arr = array();
+		require('db.php');
+	$data_atual = new DateTime("now", new DateTimeZone('America/Sao_Paulo'));
+	$mes_atual = $data_atual->format('n');
+	$ano_atual = $data_atual->format('y');
+	$resp = array_fill(0,12,0); //cria um array associativo (tipo um json) com 12 indices
+	// $resp = array (0=>0,1=>0,"02"=>0,"03"=>0,"04"=>0,"05"=>0,"06"=>0,"07"=>0,"08"=>0,"09"=>0,"10"=>0,"11"=>0);
 	
-	$dados = consulta('http://raul0010.pythonanywhere.com/consulta/*');
-	
-	foreach($dados['consulta'] as $valor)
-		array_push($arr,$valor['potencia']);
-	
-	$maior = max($arr);
-	$indice = array_search($maior,$arr);
-	
-	$resp=$dados['consulta'][$indice];
-	
+	$sensores = $_SESSION['sensores'];
+	foreach ($sensores as $sensor){
+		$url = 'http://raul0010.pythonanywhere.com/consulta/'.$sensor['id_sensor'];
+		$dados = consulta($url);
+		foreach ($dados['consulta'] as $medicao){
+			$ano_medicao = (int) date('y',strtotime($medicao['data']));
+			$mes_medicao = (int) date('n',strtotime($medicao['data']));
+			// echo $mes_medicao . '/';
+			if ($ano_medicao != $ano_atual)
+				echo "Ano atual: $ano_atual Ano medicao: $ano_medicao";
+				// return $response->withStatus(404);		
+			$resp[$mes_medicao-1] += $medicao['potencia']/(60*1000);
+		}
+	}
+	var_dump($resp);
+	$maior = max($resp);
+	$maior_mes = array_search($maior,$resp)+1;
+	$resp = array("resultado"=>array("mes"=>$maior_mes,"consumo"=>$maior));
 	return $response->withJson($resp);
 });
 
 $app->map(['GET'],'/consumo/menor', function (Request $request, Response $response, array $args) {
 	require('db.php');
-	$arr = array();
+	$data_atual = new DateTime("now", new DateTimeZone('America/Sao_Paulo'));
+	$mes_atual = $data_atual->format('n');
+	$ano_atual = $data_atual->format('y');
+	$resp = array_fill(0,12,0); //cria um array associativo (tipo um json) com 12 indices
+	// $resp = array (0=>0,1=>0,"02"=>0,"03"=>0,"04"=>0,"05"=>0,"06"=>0,"07"=>0,"08"=>0,"09"=>0,"10"=>0,"11"=>0);
 	
-	$dados = consulta('http://raul0010.pythonanywhere.com/consulta/*');
-	
-	foreach($dados['consulta'] as $valor)
-		array_push($arr,$valor['potencia']);
-	
-	$menor = min($arr);
-	$indice = array_search($menor,$arr);
-	
-	$resp=$dados['consulta'][$indice];
-	
-	return $response->withJson($resp);
+	$sensores = $_SESSION['sensores'];
+	foreach ($sensores as $sensor){
+		$url = 'http://raul0010.pythonanywhere.com/consulta/'.$sensor['id_sensor'];
+		$dados = consulta($url);
+		foreach ($dados['consulta'] as $medicao){
+			$ano_medicao = (int) date('y',strtotime($medicao['data']));
+			$mes_medicao = (int) date('n',strtotime($medicao['data']));
+			// echo $mes_medicao . '/';
+			if ($ano_medicao != $ano_atual)
+				echo "Ano atual: $ano_atual Ano medicao: $ano_medicao";
+				// return $response->withStatus(404);		
+			$resp[$mes_medicao-1] += $medicao['potencia']/(60*1000);
+		}
+	}
+	var_dump($resp);
+	$menor = min($resp);
+	$menor_mes = array_search($maior,$resp)+1;
+	$resp = array("resultado"=>array("mes"=>$menor_mes,"consumo"=>$menor));
+	return $response->withJson($resp);;
 });
 
 $app->map(['GET'],'/consumo/total/{mes}', function (Request $request, Response $response, array $args) {
@@ -192,7 +216,7 @@ $app->map(['GET'],'/gasto', function (Request $request, Response $response, arra
 			$dia_medicao = (int) date('d',strtotime($medicao['data']));
 			$mes_medicao = (int) date('n',strtotime($medicao['data']));
 			if ($dia_medicao == $dia_atual and $mes_atual == $mes_medicao)
-				$consumo += $medicao['potencia'];/(60*1000); // conusmo estimado para cada entrada de 1 minutos (em kWh)
+				$consumo += $medicao['potencia']/(60*1000); // conusmo estimado para cada entrada de 1 minutos (em kWh)
 		}
 	}
 	$custo = 0.21276+0.27087+0.05;
