@@ -1,7 +1,7 @@
 <?php
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
-
+header('Access-Control-Allow-Origin: *'); 
 if(!isset($_SESSION)) { 
     session_start(); 
 } 
@@ -31,8 +31,18 @@ X consumo por medidor desde sempre - servidor python
 
 
 // ** alterar os dois de baixo ** //
+
+$app->map(['GET'],'/consumo/individual/{medidor}', function (Request $request, Response $response, array $args) {
+	require('db.php');
+	$sensor = $args['medidor'];
+	$url = 'http://raul0010.pythonanywhere.com/consulta/'.$sensor;
+	$dados = consulta($url);
+	
+	return $response->withJson($dados);
+});
+
 $app->map(['GET'],'/consumo/maior', function (Request $request, Response $response, array $args) {
-		require('db.php');
+	require('db.php');
 	$data_atual = new DateTime("now", new DateTimeZone('America/Sao_Paulo'));
 	$mes_atual = $data_atual->format('n');
 	$ano_atual = $data_atual->format('y');
